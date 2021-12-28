@@ -71,33 +71,6 @@ public final class WebAPI {
 
 // MARK: - RTM
 extension WebAPI {
-    public static func rtmStart(
-        token: String,
-        batchPresenceAware: Bool = false,
-        mpimAware: Bool? = nil,
-        noLatest: Bool = false,
-        noUnreads: Bool? = nil,
-        presenceSub: Bool = false,
-        simpleLatest: Bool? = nil,
-        success: ((_ response: [String: Any]) -> Void)?,
-        failure: FailureClosure?
-    ) {
-        let parameters: [String: Any?] =
-            [
-                "batch_presence_aware": batchPresenceAware,
-                "mpim_aware": mpimAware,
-                "no_latest": noLatest,
-                "no_unreads": noUnreads,
-                "presence_sub": presenceSub,
-                "simple_latest": simpleLatest
-        ]
-        NetworkInterface().request(.rtmStart, accessToken: token, parameters: parameters, successClosure: {(response) in
-            success?(response)
-        }) {(error) in
-            failure?(error)
-        }
-    }
-
     public static func rtmConnect(
         token: String,
         batchPresenceAware: Bool = false,

@@ -38,13 +38,13 @@ public protocol RTMWebSocket {
     func sendMessage(_ message: String) throws
 }
 
-public protocol RTMAdapter: class {
+public protocol RTMAdapter: AnyObject {
     func initialSetup(json: [String: Any], instance: SKRTMAPI)
     func notificationForEvent(_ event: Event, type: EventType, instance: SKRTMAPI)
     func connectionClosed(with error: Error, instance: SKRTMAPI)
 }
 
-public protocol RTMDelegate: class {
+public protocol RTMDelegate: AnyObject {
     func didConnect()
     func disconnected()
     func receivedMessage(_ message: String)
@@ -76,34 +76,17 @@ public final class SKRTMAPI: RTMDelegate {
         self.rtm.delegate = self
     }
 
-    public func connect(withInfo: Bool = true) {
-        if withInfo {
-            WebAPI.rtmStart(
-                token: token,
-                batchPresenceAware: options.noUnreads,
-                mpimAware: options.mpimAware,
-                noLatest: options.noLatest,
-                noUnreads: options.noUnreads,
-                presenceSub: options.presenceSub,
-                simpleLatest: options.simpleLatest,
-                success: {(response) in
-                    self.connectWithResponse(response)
-                }, failure: { (error) in
-                    self.adapter?.connectionClosed(with: error, instance: self)
-                }
-            )
-        } else {
-            WebAPI.rtmConnect(
-                token: token,
-                batchPresenceAware: options.batchPresenceAware,
-                presenceSub: options.presenceSub,
-                success: {(response) in
-                    self.connectWithResponse(response)
-                }, failure: { (error) in
-                    self.adapter?.connectionClosed(with: error, instance: self)
-                }
-            )
-        }
+    public func connect() {
+        WebAPI.rtmConnect(
+            token: token,
+            batchPresenceAware: options.batchPresenceAware,
+            presenceSub: options.presenceSub,
+            success: {(response) in
+                self.connectWithResponse(response)
+            }, failure: { (error) in
+                self.adapter?.connectionClosed(with: error, instance: self)
+            }
+        )
     }
 
     public func disconnect() {

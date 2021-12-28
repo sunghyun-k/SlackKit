@@ -134,7 +134,7 @@ SlackKit currently supports the a subset of the Slack Web API that is available 
 | `reactions.get`|
 | `reactions.list`|
 | `reactions.remove`|
-| `rtm.start`|
+| `rtm.connect`|
 | `stars.add`|
 | `stars.remove`|
 | `team.info`|

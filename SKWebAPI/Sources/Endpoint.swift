@@ -79,7 +79,6 @@ public enum Endpoint: String {
     case reactionsList = "reactions.list"
     case reactionsRemove = "reactions.remove"
     case rtmConnect = "rtm.connect"
-    case rtmStart = "rtm.start"
     case searchAll = "search.all"
     case searchFiles = "search.files"
     case searchMessages = "search.messages"
