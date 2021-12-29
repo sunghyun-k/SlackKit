@@ -41,3 +41,4 @@ Carthage/Build
 .swiftpm/
 
 *.resolved
+.vscode
