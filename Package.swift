@@ -5,7 +5,7 @@ import PackageDescription
 let package = Package(
     name: "SlackKit",
     platforms: [
-        .macOS(.v10_10), .iOS(.v10), .tvOS(.v10)
+        .macOS(.v10_15), .iOS(.v10), .tvOS(.v10)
     ],
     products: [
         .library(name: "SlackKit", targets: ["SlackKit"]),
@@ -16,9 +16,9 @@ let package = Package(
         .library(name: "SKWebAPI", targets: ["SKWebAPI"])
     ],
     dependencies: [
-        .package(name: "Swifter", url: "https://github.com/httpswift/swifter.git", .upToNextMinor(from: "1.5.0")),
-        .package(name: "WebSocket", url: "https://github.com/vapor/websocket", .upToNextMinor(from: "1.1.2")),
-        .package(name: "Starscream", url: "https://github.com/daltoniam/Starscream", .upToNextMinor(from: "4.0.4"))
+        .package(url: "https://github.com/httpswift/swifter", from: .init(1, 5, 0)),
+        .package(url: "https://github.com/vapor/websocket-kit", from: .init(2, 5, 0)),
+        .package(url: "https://github.com/daltoniam/Starscream", from: .init(4, 0, 4)),
     ],
     targets: [
         .target(name: "SlackKit",
@@ -34,11 +34,12 @@ let package = Package(
                     "SKCore",
                     "SKWebAPI",
                     .product(name: "Starscream", package: "Starscream", condition: .when(platforms: [.macOS, .iOS, .tvOS])),
-                    .product(name: "WebSocket", package: "WebSocket", condition: .when(platforms: [.macOS, .linux])),
+                    .product(name: "WebSocketKit", package: "websocket-kit", condition: .when(platforms: [.macOS, .linux])),
                 ],
                 path: "SKRTMAPI/Sources"),
         .target(name: "SKServer",
-                dependencies: ["SKCore", "SKWebAPI", "Swifter"],
+                dependencies: ["SKCore", "SKWebAPI",
+                    .product(name: "Swifter", package: "swifter")],
                 path: "SKServer/Sources"),
         .target(name: "SKWebAPI",
                 dependencies: ["SKCore"],
