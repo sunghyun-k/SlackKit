@@ -1,5 +1,4 @@
-# Notice #
-## This library is no longer under active development.
+# **This library is no longer under active development.**
 
 ## SlackKit: Slack Apps in Swift
 ### Description
