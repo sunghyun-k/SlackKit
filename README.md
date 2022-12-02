@@ -1,11 +1,6 @@
 # **This library is no longer under active development.**
 
-## SlackKit: Slack Apps in Swift
-### Description
-
-SlackKit makes it easy to build Slack apps in Swift.
-
-It's intended to expose all of the functionality of Slack's [Real Time Messaging API](https://api.slack.com/rtm) as well as the [web APIs](https://api.slack.com/web) that are accessible to [bot users](https://api.slack.com/bot-users). SlackKit also supports Slack’s [OAuth 2.0](https://api.slack.com/docs/oauth) flow including the [Add to Slack](https://api.slack.com/docs/slack-button) and [Sign in with Slack](https://api.slack.com/docs/sign-in-with-slack) buttons, [incoming webhooks](https://api.slack.com/incoming-webhooks), [slash commands](https://api.slack.com/slash-commands), and [message buttons](https://api.slack.com/docs/message-buttons).
+## SlackKit
 
 ### Installation
 
@@ -141,11 +136,3 @@ Don’t need the whole banana? Want more control over the low-level implementati
 
 ### Examples
 You can find the source code for several example applications [here](https://github.com/pvzig/SlackKit/tree/master/Examples).
-
-### Tutorials
-- [Build a Slack Bot and Deploy to Heroku](https://medium.com/@pvzig/building-slack-bots-in-swift-b99e243e444c)
-
-### Get In Touch
-Twitter: [@pvzig](https://twitter.com/pvzig)
-
-Email: <peter@launchsoft.co>
