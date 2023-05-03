@@ -22,11 +22,12 @@
 // THE SOFTWARE.
 
 import Foundation
-import Swifter
+import Vapor
 
 class SwifterServer: SlackKitServer {
-    let server = HttpServer()
+    let app = Application()
     let port: in_port_t
+    // 사용하는 프로퍼티가 아님
     let forceIPV4: Bool
 
     init(port: in_port_t = 8080, forceIPV4: Bool = false, responder: SlackKitResponder) {
@@ -34,33 +35,36 @@ class SwifterServer: SlackKitServer {
         self.forceIPV4 = forceIPV4
 
         for route in responder.routes {
-            server[route.path] = { request in
-                return route.middleware.respond(to: (request.request, Response())).1.httpResponse
+            
+            app.post("\(route.path)") { request in
+                return route.middleware.respond(to: (request.request, Response())).1.response
             }
         }
     }
 
     public func start() {
         do {
-            try server.start(port, forceIPv4: forceIPV4)
+            try app.server.start(address: .hostname(nil, port: Int(port)))
         } catch let error {
             print("Server failed to start with error: \(error)")
         }
     }
 
     deinit {
-        server.stop()
+        app.shutdown()
     }
 }
 
-extension HttpRequest {
+extension Vapor.Request {
     public var request: RequestType {
         return try! Request(
-            method: HTTPMethod.custom(named: method),
-            path: path,
-            queryPairs: queryParams,
-            body: String(bytes: body, encoding: .utf8) ?? "",
-            headers: HTTPHeaders(headers: headers.map ({ Header(name: $0.key, value: $0.value) }))
+            method: .custom(named: method.string),
+            path: route?.path.string ?? "",
+            queryPairs: parameters.allNames
+                .map { ($0, parameters.get($0)!) },
+            body: body.string ?? "",
+            headers: HTTPHeaders(headers: headers
+                .map { Header(name: $0.name, value: $0.value) })
         )
     }
 }
@@ -69,28 +73,23 @@ extension ResponseType {
     public var contentType: String? {
         return self.headers.first(where: {$0.name.lowercased() == "content-type"})?.value
     }
-
-    public var httpResponse: HttpResponse {
+    
+    public var response: Vapor.Response {
         switch self.code {
         case 200 where contentType == nil:
-            return .ok(.text(bodyString ?? ""))
+            return .init(status: .ok, body: .init(string: bodyString ?? ""))
         case 200 where contentType?.lowercased() == "application/json":
             do {
                 let json = try JSONSerialization.jsonObject(with: body, options: [])
-                #if os(Linux)
-                    //swiftlint:disable force_cast
-                    return .ok(.json(json as! AnyObject))
-                    //swiftlint:enable force_cast
-                #else
-                    return .ok(.json(json as AnyObject))
-                #endif
+                return .init(status: .ok, body: .init(data: body))
+                
             } catch let error {
-                return .badRequest(.text(error.localizedDescription))
+                return .init(status: .badRequest, body: .init(string: error.localizedDescription))
             }
         case 400:
-            return .badRequest(.text("Bad request."))
+            return .init(status: .badRequest, body: .init(string: "Bad request."))
         default:
-            return .ok(.text("ok"))
+            return .init(status: .ok, body: .init(string: "ok"))
         }
     }
 }

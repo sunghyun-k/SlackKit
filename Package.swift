@@ -1,11 +1,11 @@
-// swift-tools-version:5.3
+// swift-tools-version:5.7.1
 
 import PackageDescription
 
 let package = Package(
     name: "SlackKit",
     platforms: [
-        .macOS(.v10_15), .iOS(.v10), .tvOS(.v10)
+        .macOS(.v13),
     ],
     products: [
         .library(name: "SlackKit", targets: ["SlackKit"]),
@@ -16,9 +16,9 @@ let package = Package(
         .library(name: "SKWebAPI", targets: ["SKWebAPI"])
     ],
     dependencies: [
-        .package(url: "https://github.com/httpswift/swifter", from: .init(1, 5, 0)),
-        .package(url: "https://github.com/vapor/websocket-kit", from: .init(2, 5, 0)),
-        .package(url: "https://github.com/daltoniam/Starscream", from: .init(4, 0, 4)),
+        .package(url: "https://github.com/vapor/vapor", from: Version(4, 76, 0)),
+        .package(url: "https://github.com/vapor/websocket-kit", from: Version(2, 5, 0)),
+        .package(url: "https://github.com/daltoniam/Starscream", from: Version(4, 0, 4)),
     ],
     targets: [
         .target(name: "SlackKit",
@@ -38,8 +38,11 @@ let package = Package(
                 ],
                 path: "SKRTMAPI/Sources"),
         .target(name: "SKServer",
-                dependencies: ["SKCore", "SKWebAPI",
-                    .product(name: "Swifter", package: "swifter")],
+                dependencies: [
+                    "SKCore",
+                    "SKWebAPI",
+                    .product(name: "Vapor", package: "vapor"),
+                ],
                 path: "SKServer/Sources"),
         .target(name: "SKWebAPI",
                 dependencies: ["SKCore"],
